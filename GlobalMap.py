@@ -4,7 +4,7 @@ class GlobalMap:
     @classmethod
     def set(cls, key, value):
         try:
-            cls.map[key] = str(value)
+            cls.map[key] = value
             # print(key + ":" + str(value))
         except BaseException as msg:
             raise msg
@@ -31,4 +31,4 @@ class GlobalMap:
                     dic[key] = cls.map[key]
             return dic
         except KeyError:
-            return 'Null_'
+            return None

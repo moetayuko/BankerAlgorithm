@@ -27,6 +27,19 @@
      <string>初始化</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="requestButton">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>400</y>
+      <width>110</width>
+      <height>39</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>申请资源</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

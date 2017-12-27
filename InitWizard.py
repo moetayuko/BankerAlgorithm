@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWizard
 
 from SpinBoxDelegate import SpinBoxDelegate
 from Ui.Ui_InitWizard import Ui_InitWizard
-from GlobalMap import *
+from GlobalMap import GlobalMap
 
 import numpy as np
 
@@ -51,10 +51,10 @@ class InitWizard(QWizard, Ui_InitWizard):
 
     def save_available_resource(self):
         model = self.availableTableView.model()
-        size = model.rowCount()
-        available = np.zeros(size)
+        num_resource = model.rowCount()
+        available = np.zeros((num_resource, 1))
 
-        for i in range(size):
+        for i in range(num_resource):
             available[i] = int(model.item(i, 1).text())
 
         # 可利用资源向量
