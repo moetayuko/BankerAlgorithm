@@ -25,7 +25,6 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         # 可利用资源向量不存在，退出分配
         if self.available is None or self.max_need is None or self.num_process is None or self.num_resource is None:
             QMessageBox.warning(self, '错误', '请先初始化！')
-            self.deleteLater()
             QMetaObject.invokeMethod(self, 'close', QtCore.Qt.QueuedConnection)
             return
 

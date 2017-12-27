@@ -20,6 +20,9 @@ class Ui_MainWindow(object):
         self.requestButton = QtWidgets.QPushButton(self.centralwidget)
         self.requestButton.setGeometry(QtCore.QRect(280, 400, 110, 39))
         self.requestButton.setObjectName("requestButton")
+        self.releaseButton = QtWidgets.QPushButton(self.centralwidget)
+        self.releaseButton.setGeometry(QtCore.QRect(470, 420, 110, 39))
+        self.releaseButton.setObjectName("releaseButton")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -30,4 +33,5 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "银行家算法"))
         self.initButton.setText(_translate("MainWindow", "初始化"))
         self.requestButton.setText(_translate("MainWindow", "申请资源"))
+        self.releaseButton.setText(_translate("MainWindow", "释放资源"))
 
