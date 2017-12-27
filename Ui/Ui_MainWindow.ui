@@ -55,7 +55,11 @@
        </spacer>
       </item>
       <item row="1" column="2">
-       <widget class="QTableView" name="allocationTableView"/>
+       <widget class="QTableView" name="allocationTableView">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

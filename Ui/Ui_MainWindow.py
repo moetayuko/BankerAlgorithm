@@ -31,6 +31,7 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 1, 1, 1)
         self.allocationTableView = QtWidgets.QTableView(self.centralwidget)
+        self.allocationTableView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.allocationTableView.setObjectName("allocationTableView")
         self.gridLayout.addWidget(self.allocationTableView, 1, 2, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)

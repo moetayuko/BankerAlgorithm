@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QWizard
+from PyQt5.QtWidgets import QWizard, QMessageBox
 
 from SpinBoxDelegate import SpinBoxDelegate
 from Ui.Ui_InitWizard import Ui_InitWizard
@@ -28,10 +28,17 @@ class InitWizard(QWizard, Ui_InitWizard):
 
     def save_num(self):
         # 进程数量
-        GlobalMap.set('num_process', int(self.processCountSpinBox.text()))
+        num_process = int(self.processCountSpinBox.text())
         # 资源种类
-        GlobalMap.set('num_resource', int(self.resourceCountSpinBox.text()))
-        return True
+        num_resource = int(self.resourceCountSpinBox.text())
+
+        if num_resource and num_process:
+            GlobalMap.set('num_process', num_process)
+            GlobalMap.set('num_resource', num_resource)
+            return True
+
+        QMessageBox.warning(self, '错误', '请设置至少一个进程和至少一种资源')
+        return False
 
     def init_available_resource_page(self):
         num_resource = int(GlobalMap.get('num_resource'))
@@ -52,7 +59,7 @@ class InitWizard(QWizard, Ui_InitWizard):
     def save_available_resource(self):
         model = self.availableTableView.model()
         num_resource = model.rowCount()
-        available = np.zeros((num_resource, 1))
+        available = np.zeros((num_resource, 1), dtype=np.int)
 
         for i in range(num_resource):
             available[i] = int(model.item(i, 1).text())
@@ -84,7 +91,7 @@ class InitWizard(QWizard, Ui_InitWizard):
         model = self.maxTableView.model()
         num_process = model.rowCount()
         num_resource = model.columnCount()
-        max_need = np.zeros((num_process, num_resource))
+        max_need = np.zeros((num_process, num_resource), dtype=np.int)
 
         for i in range(num_process):
             for j in range(num_resource):
@@ -92,5 +99,8 @@ class InitWizard(QWizard, Ui_InitWizard):
 
         # 最大需求矩阵，max_need[i][j]表示进程i对j类资源的最大需求
         GlobalMap.set('max_need', max_need)
+
+        # 标记初始化成功
+        GlobalMap.set('init', True)
 
         return True

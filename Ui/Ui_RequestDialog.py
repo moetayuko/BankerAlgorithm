@@ -22,8 +22,6 @@ class Ui_RequestDialog(object):
         self.spinBox = QtWidgets.QSpinBox(RequestDialog)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout.addWidget(self.spinBox)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.tableView = QtWidgets.QTableView(RequestDialog)
         self.tableView.setObjectName("tableView")

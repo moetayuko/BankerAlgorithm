@@ -22,8 +22,8 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         self.max_need = GlobalMap.get('max_need')
 
     def showEvent(self, a0: QtGui.QShowEvent):
-        # 可利用资源向量不存在，退出分配
-        if self.available is None or self.max_need is None or self.num_process is None or self.num_resource is None:
+        # 尚未分配资源，退出
+        if not GlobalMap.get('init'):
             QMessageBox.warning(self, '错误', '请先初始化！')
             QMetaObject.invokeMethod(self, 'close', QtCore.Qt.QueuedConnection)
             return
@@ -44,9 +44,13 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         self.tableView.setModel(model)
 
     def accept(self):
-        request = np.zeros((self.num_resource, 1))
+        request = np.zeros((self.num_resource, 1), dtype=np.int)
         for i in range(self.num_resource):
             request[i] = int(self.tableView.model().item(i, 1).text())
+
+        if not request.any():
+            QMessageBox.warning(self, '错误', '未设定分配资源数量')
+            return
 
         process = int(self.spinBox.text())
 
@@ -56,7 +60,7 @@ class RequestDialog(QDialog, Ui_RequestDialog):
     def banker_algorithm(self, request, process):
         # 分配矩阵不存在，表示资源尚未分配，创建全零分配矩阵
         if self.allocation is None:
-            self.allocation = np.zeros((self.num_process, self.num_resource))
+            self.allocation = np.zeros((self.num_process, self.num_resource), dtype=np.int)
 
         need = self.max_need - self.allocation
 
@@ -64,7 +68,7 @@ class RequestDialog(QDialog, Ui_RequestDialog):
             QMessageBox.warning(self, '错误', '所需要的资源数已超过所宣布的最大值')
             return False
 
-        if (request.T > self.available).any():
+        if (request > self.available).any():
             QMessageBox.warning(self, '错误', '尚无足够资源，请等待')
             return False
 
@@ -85,7 +89,7 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         self.available += request
         self.allocation[process] = self.allocation[process] - request.T
         need[process] = need[process] + request.T
-        QMessageBox.warning(self, '错误', '分配失败，系统处于不安全状态')
+        QMessageBox.warning(self, '错误', '分配失败，否则系统将处于不安全状态')
 
     def safety_algorithm(self):
         # 工作向量，表示系统可提供给进程继续运行所需的各类资源数目，开始时与available相等
@@ -104,7 +108,7 @@ class RequestDialog(QDialog, Ui_RequestDialog):
                 break
             work += np.sum(self.allocation[todo], axis=0, keepdims=True).T
             finish[todo] = True
-            safe_list.append(todo)
+            safe_list.extend(todo)
 
         # 有任务没完成，处于不安全状态
         if False in finish:
