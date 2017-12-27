@@ -47,7 +47,6 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         request = np.zeros((self.num_resource, 1))
         for i in range(self.num_resource):
             request[i] = int(self.tableView.model().item(i, 1).text())
-            print(request[i])
 
         process = int(self.spinBox.text())
 
