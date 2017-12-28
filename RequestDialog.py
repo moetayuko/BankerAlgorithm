@@ -38,22 +38,27 @@ class RequestDialog(QDialog, Ui_RequestDialog):
             idx = QStandardItem(str(i))
             idx.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
             model.setItem(i, 0, idx)
+            # 设置默认请求向量为0
             model.setItem(i, 1, QStandardItem("0"))
 
         self.tableView.setItemDelegateForColumn(1, SpinBoxDelegate())
         self.tableView.setModel(model)
 
     def accept(self):
+        # 读取输入的请求向量
         request = np.zeros((self.num_resource, 1), dtype=np.int)
         for i in range(self.num_resource):
             request[i] = int(self.tableView.model().item(i, 1).text())
 
+        # 输入了全0请求向量
         if not request.any():
             QMessageBox.warning(self, '错误', '未设定分配资源数量')
             return
 
+        # 读取请求资源的进程编号
         process = int(self.spinBox.text())
 
+        # 运行银行家算法
         if self.banker_algorithm(request, process):
             QDialog.accept(self)
 
@@ -62,6 +67,7 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         if self.allocation is None:
             self.allocation = np.zeros((self.num_process, self.num_resource), dtype=np.int)
 
+        # 生成需求矩阵
         need = self.max_need - self.allocation
 
         if (request.T > need[process]).any():
@@ -72,13 +78,14 @@ class RequestDialog(QDialog, Ui_RequestDialog):
             QMessageBox.warning(self, '错误', '尚无足够资源，请等待')
             return False
 
-        # 尝试分配资源
+        # 尝试分配资源，更新可利用资源向量、分配矩阵和需求矩阵
         self.available -= request
         self.allocation[process] = self.allocation[process] + request.T
         need[process] = need[process] - request.T
 
+        # 运行安全检查算法，得到安全状态和一个安全序列
         safe, safe_list = self.safety_algorithm()
-        # 安全检查通过，完成分配
+        # 安全检查通过，保存新的可利用资源向量和分配矩阵，完成分配
         if safe:
             GlobalMap.set('available', self.available)
             GlobalMap.set('allocation', self.allocation)
@@ -98,16 +105,24 @@ class RequestDialog(QDialog, Ui_RequestDialog):
         # 表示系统是否有足够的资源分配给进程，使之运行完成，开始时全为false
         finish = np.zeros(self.num_process, dtype=np.bool)
 
+        # 生成需求矩阵
         need = self.max_need - self.allocation
 
+        # 创建空安全序列
         safe_list = []
 
+        # 当有进程未完成时，进行安全检查
         while False in finish:
+            # 找到未完成且需求小于工作向量的所有进程
             todo = [i for i in range(self.num_process) if not finish[i] and (need[i] <= work.T).all()]
+            # 若不存在这样的进程，退出循环
             if not todo:
                 break
+            # 当进程获得资源后，可顺利执行，直至完成，并释放出分配给它的资源，更新工作向量
             work += np.sum(self.allocation[todo], axis=0, keepdims=True).T
+            # 标记进程已完成
             finish[todo] = True
+            # 将进程加入安全序列
             safe_list.extend(todo)
 
         # 有任务没完成，处于不安全状态

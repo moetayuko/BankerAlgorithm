@@ -25,10 +25,12 @@ class ReleaseDialog(QDialog, Ui_ReleaseDialog):
 
     def accept(self):
         process = int(self.spinBox.text())
+        # 分配矩阵中进程i已分配资源全为0，退出资源释放
         if not self.allocation[process].any():
             QMessageBox.warning(self, '错误', '选定进程没有分配资源')
             return
 
+        # 更新可利用资源向量和分配矩阵
         available = GlobalMap.get('available')
         available += self.allocation[process, np.newaxis].T
         self.allocation[process, :] = 0

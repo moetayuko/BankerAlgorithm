@@ -34,6 +34,7 @@ class MaxDialog(QDialog, Ui_MaxDialog):
 
         for i in range(num_process):
             for j in range(num_resource):
+                # 从最大需求矩阵中读取第i个进程对第j种资源的需求，显示在表格中
                 model.setItem(i, j, QStandardItem(str(max_need[i][j])))
             model.setHeaderData(i, QtCore.Qt.Vertical, str(i))
 

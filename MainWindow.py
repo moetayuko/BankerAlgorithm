@@ -43,7 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         num_process = int(GlobalMap.get('num_process'))
         num_resource = int(GlobalMap.get('num_resource'))
 
-        # 可用资源表
+        # 可利用资源向量
         available = GlobalMap.get('available')
         if available is None:
             return
@@ -59,8 +59,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.availableResTableView.setModel(model)
 
-        # 已分配资源表
+        # 分配矩阵
         allocation = GlobalMap.get('allocation')
+        # 资源未分配则不显示
         if allocation is None:
             return
 
@@ -72,6 +73,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for i in range(num_process):
             for j in range(num_resource):
+                # 从分配矩阵中读取第i个进程占用第j种资源的个数，显示在表格中
                 model.setItem(i, j, QStandardItem(str(allocation[i][j])))
             model.setHeaderData(i, QtCore.Qt.Vertical, str(i))
 

@@ -32,15 +32,18 @@ class InitWizard(QWizard, Ui_InitWizard):
         # 资源种类
         num_resource = int(self.resourceCountSpinBox.text())
 
+        # 进程和资源数量非零，保存
         if num_resource and num_process:
             GlobalMap.set('num_process', num_process)
             GlobalMap.set('num_resource', num_resource)
             return True
 
+        # 否则报错
         QMessageBox.warning(self, '错误', '请设置至少一个进程和至少一种资源')
         return False
 
     def init_available_resource_page(self):
+        # 资源数量
         num_resource = int(GlobalMap.get('num_resource'))
 
         model = QStandardItemModel()
@@ -51,6 +54,7 @@ class InitWizard(QWizard, Ui_InitWizard):
             idx = QStandardItem(str(i))
             idx.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
             model.setItem(i, 0, idx)
+            # 设置默认可利用资源向量为0
             model.setItem(i, 1, QStandardItem("0"))
 
         self.availableTableView.setItemDelegateForColumn(1, SpinBoxDelegate())
@@ -81,6 +85,7 @@ class InitWizard(QWizard, Ui_InitWizard):
 
         for i in range(num_process):
             for j in range(num_resource):
+                # 设置默认最大需求矩阵为0
                 model.setItem(i, j, QStandardItem("0"))
             model.setHeaderData(i, QtCore.Qt.Vertical, str(i))
 
