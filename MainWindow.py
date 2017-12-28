@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 from GlobalMap import GlobalMap
 from InitWizard import InitWizard
+from MaxDialog import MaxDialog
 from ReleaseDialog import ReleaseDialog
 from RequestDialog import RequestDialog
 from Ui.Ui_MainWindow import Ui_MainWindow
@@ -16,6 +17,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # 初始化，生成可利用资源向量和最大需求矩阵
         self.initButton.clicked.connect(self.show_init_wizard)
+        # 显示最大需求矩阵
+        self.maxButton.clicked.connect(lambda x: MaxDialog(self).show())
         # 申请资源，产生资源请求向量，使用银行家算法和安全性算法检查并分配资源
         self.requestButton.clicked.connect(self.show_request_dialog)
         # 释放资源
